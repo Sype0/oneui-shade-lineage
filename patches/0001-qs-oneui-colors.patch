@@ -1,0 +1,183 @@
+diff -ruN a/smali_classes2/com/android/systemui/qs/tileimpl/OneUIColors.smali b/smali_classes2/com/android/systemui/qs/tileimpl/OneUIColors.smali
+--- a/smali_classes2/com/android/systemui/qs/tileimpl/OneUIColors.smali	1970-01-01 02:00:00.000000000 +0200
++++ b/smali_classes2/com/android/systemui/qs/tileimpl/OneUIColors.smali	2026-10-15 12:26:38.241943427 +0300
+@@ -0,0 +1,71 @@
++.class public final Lcom/android/systemui/qs/tileimpl/OneUIColors;
++.super Ljava/lang/Object;
++.source "OneUIColors.java"
++
++
++# One UI style Quick Settings palette.
++# 0 tile active, 1 tile inactive, 2 label active, 3 label inactive,
++# 4 secondary label active, 5 secondary label inactive, 6 icon active, 7 icon inactive
++.method public static color(Landroid/content/Context;I)I
++    .locals 2
++
++    invoke-virtual {p0}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
++
++    move-result-object v0
++
++    invoke-virtual {v0}, Landroid/content/res/Resources;->getConfiguration()Landroid/content/res/Configuration;
++
++    move-result-object v0
++
++    iget v0, v0, Landroid/content/res/Configuration;->uiMode:I
++
++    and-int/lit8 v0, v0, 0x30
++
++    const/16 v1, 0x20
++
++    if-eq v0, v1, :night
++
++    const/16 v0, 0x8
++
++    new-array v0, v0, [I
++
++    fill-array-data v0, :light
++
++    goto :pick
++
++    :night
++    const/16 v0, 0x8
++
++    new-array v0, v0, [I
++
++    fill-array-data v0, :dark
++
++    :pick
++    aget v0, v0, p1
++
++    return v0
++
++    :light
++    .array-data 4
++        -0xc16e01
++        -0x171715
++        -0x1
++        -0xe3e3e2
++        -0x33000001
++        -0x91918d
++        -0x1
++        -0xc5c5c4
++    .end array-data
++
++    :dark
++    .array-data 4
++        -0xc16e01
++        -0xd3d3d2
++        -0x1
++        -0xd0d0e
++        -0x33000001
++        -0x61615d
++        -0x1
++        -0x191919
++    .end array-data
++.end method
+diff -ruN a/smali_classes2/com/android/systemui/qs/tileimpl/QSIconViewImpl.smali b/smali_classes2/com/android/systemui/qs/tileimpl/QSIconViewImpl.smali
+--- a/smali_classes2/com/android/systemui/qs/tileimpl/QSIconViewImpl.smali	2026-10-15 12:26:38.193943427 +0300
++++ b/smali_classes2/com/android/systemui/qs/tileimpl/QSIconViewImpl.smali	2026-10-15 12:26:49.573943423 +0300
+@@ -217,12 +217,12 @@
+ 
+     .line 17
+     .line 18
+-    const p1, 0x7f0404d8
++    const/4 p1, 0x7
+ 
+     .line 19
+     .line 20
+     .line 21
+-    invoke-static {p1, v1, p0}, Lcom/android/settingslib/Utils;->getColorAttrDefaultColor(IILandroid/content/Context;)I
++    invoke-static {p0, p1}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
+ 
+     .line 22
+     .line 23
+@@ -241,12 +241,12 @@
+ 
+     .line 28
+     .line 29
+-    const p1, 0x7f0404d5
++    const/4 p1, 0x6
+ 
+     .line 30
+     .line 31
+     .line 32
+-    invoke-static {p1, v1, p0}, Lcom/android/settingslib/Utils;->getColorAttrDefaultColor(IILandroid/content/Context;)I
++    invoke-static {p0, p1}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
+ 
+     .line 33
+     .line 34
+diff -ruN a/smali_classes2/com/android/systemui/qs/tileimpl/QSTileViewImpl.smali b/smali_classes2/com/android/systemui/qs/tileimpl/QSTileViewImpl.smali
+--- a/smali_classes2/com/android/systemui/qs/tileimpl/QSTileViewImpl.smali	2026-10-15 12:26:38.193943427 +0300
++++ b/smali_classes2/com/android/systemui/qs/tileimpl/QSTileViewImpl.smali	2026-10-15 12:26:49.569943423 +0300
+@@ -449,6 +449,56 @@
+     .line 160
+     iput v4, p0, Lcom/android/systemui/qs/tileimpl/QSTileViewImpl;->colorSecondaryLabelInactive:I
+ 
++    # One UI palette
++    const/4 v4, 0x0
++
++    invoke-static {p1, v4}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
++
++    move-result v4
++
++    iput v4, p0, Lcom/android/systemui/qs/tileimpl/QSTileViewImpl;->colorActive:I
++
++    const/4 v4, 0x1
++
++    invoke-static {p1, v4}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
++
++    move-result v4
++
++    iput v4, p0, Lcom/android/systemui/qs/tileimpl/QSTileViewImpl;->colorInactive:I
++
++    const/4 v4, 0x2
++
++    invoke-static {p1, v4}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
++
++    move-result v4
++
++    iput v4, p0, Lcom/android/systemui/qs/tileimpl/QSTileViewImpl;->colorLabelActive:I
++
++    const/4 v4, 0x3
++
++    invoke-static {p1, v4}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
++
++    move-result v4
++
++    iput v4, p0, Lcom/android/systemui/qs/tileimpl/QSTileViewImpl;->colorLabelInactive:I
++
++    const/4 v4, 0x4
++
++    invoke-static {p1, v4}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
++
++    move-result v4
++
++    iput v4, p0, Lcom/android/systemui/qs/tileimpl/QSTileViewImpl;->colorSecondaryLabelActive:I
++
++    const/4 v4, 0x5
++
++    invoke-static {p1, v4}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
++
++    move-result v4
++
++    iput v4, p0, Lcom/android/systemui/qs/tileimpl/QSTileViewImpl;->colorSecondaryLabelInactive:I
++
++
+     .line 161
+     .line 162
+     invoke-static {v2, v3, p1}, Lcom/android/settingslib/Utils;->getColorAttrDefaultColor(IILandroid/content/Context;)I
+@@ -4205,12 +4255,12 @@
+     move-result-object v2
+ 
+     .line 112
+-    const v3, 0x7f0404d5
++    const/4 v3, 0x6
+ 
+     .line 113
+     .line 114
+     .line 115
+-    invoke-static {v3, v12, v2}, Lcom/android/settingslib/Utils;->getColorAttrDefaultColor(IILandroid/content/Context;)I
++    invoke-static {v2, v3}, Lcom/android/systemui/qs/tileimpl/OneUIColors;->color(Landroid/content/Context;I)I
+ 
+     .line 116
+     .line 117
