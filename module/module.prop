@@ -1,0 +1,6 @@
+id=oneui_shade
+name=One UI Shade (LineageOS 22 / topaz)
+version=dev
+versionCode=1
+author=Sype0
+description=One UI style notification shade and Quick Settings for this LineageOS 22 SystemUI build. Disable in Magisk (or boot holding Volume Down) to revert.
